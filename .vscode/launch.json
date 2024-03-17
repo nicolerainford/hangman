@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "type": "rdbg",
+                "name": "Attach rdbg",
+                "request": "attach"
+            },
+            {
+                "type": "rdbg",
+                "name": "Debug current file with rdbg",
+                "request": "launch",
+                "command": "bundle exec ruby",
+                "cwd": "${workspaceFolder}",
+                "script": "${workspaceFolder}/main.rb",
+                "args": [],
+                "env": {},
+                "useBundler": true,
+                "askParameters": true,
+                "rdbgPath": "rdbg",
+                "waitLaunchTime": 5000,
+                "useTerminal": false,
+                "showProtocolLog": false
+            }
+        ]
+    }
