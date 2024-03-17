@@ -1,13 +1,11 @@
-=begin
-what happens?
-start game
-#computer generates word from list btwn 5-12 chars
-starts with 10 guess
-guess a letter at a time
-all guesses are saved into an array
-is guess is correct its displayed amongst the _ _ _ _
-=end
-#require 'pry'
+# what happens?
+# start game
+# computer generates word from list btwn 5-12 chars
+# starts with 10 guess
+# guess a letter at a time
+# all guesses are saved into an array
+# is guess is correct its displayed amongst the _ _ _ _
+
 class Hangman
   def initialize
     @words_arr = []
@@ -23,29 +21,36 @@ class Hangman
   end
 
   def word_generator
-    @secret_word = @words_arr.select {|word| word.length > 4 && word.length < 13}.sample.split("")
+    @secret_word = @words_arr.select { |word| word.length > 4 && word.length < 13 }.sample.split('')
   end
 
+  # def guess
+  # end
+
   def handle_guess
-    #later add in loop count
-    @placeholder = Array.new(@secret_word.length,'_')
+    # later add in loop count
+    @placeholder = Array.new(@secret_word.length, '_')
     p "secret word is #{@secret_word}"
-    #text to make guess
+    # text to make guess
     while @guess_count < 10
-      p "player enter your guess"
+      p 'player enter your guess'
       @guess = gets.chomp
-      #@guess = ["a"]
+      # @guess = ["a"]
       next unless @guess.length == 1 && @guess.respond_to?(:to_s)
-      @guess_count += 1
-      @secret_word.each_with_index do |word,index|
+
+      @secret_word.each_with_index do |_word, index|
         if @secret_word[index].include?(@guess)
           @placeholder[index] = @guess
-       end
-     end
-     p @placeholder
-   end
-   #binding.pry
-    #p @placeholder
+        end
+      end
+      if !@secret_word.include?(@guess)
+        @guess_count += 1
+      end
+      p "You have #{@guess_count} incorrect guesses remaining"
+      p @placeholder
+    end
+    # binding.pry
+    # p @placeholder
   end
 
   def start_game
