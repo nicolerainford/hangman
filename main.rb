@@ -47,18 +47,14 @@ class Hangman
       puts "You've already guessed that letter!"
     end
     # puts "You've already guessed that letter!" if @guess_array.include?(@guess)
-    @guess_array << @guess unless @guess_array.include?(@guess)
-    p "You have #{@guess_count} incorrect guesses remaining" if @guess_count >= 1 && !@secret_word.include?(@guess)
-    puts "Letters guessed: #{@guess_array}" unless victory?
-    p @placeholder
-    puts 'Out of guesses' if @guess_count == 0 && !victory?
+
   end
 
   def victory?
+    p "value of victory is #{@victory}"
     return unless @placeholder === @secret_word
-
-    @victory = true
-    p 'You have won!'
+      @victory = true
+      p 'You have won!'
   end
 
   def handle_guess
@@ -70,12 +66,16 @@ class Hangman
       p 'player enter your guess'
       @guess = gets.chomp
       next unless @guess.length == 1 && @guess.respond_to?(:to_s)
-
       update_placeholder
-      check_guess_result
       break if victory?
-
-
+      #victory?
+      check_guess_result
+      #break if victory?
+      @guess_array << @guess unless @guess_array.include?(@guess)
+      p "You have #{@guess_count} incorrect guesses remaining" if @guess_count >= 1 && !@secret_word.include?(@guess)
+      puts "Letters guessed: #{@guess_array}" unless victory?
+      p @placeholder
+      puts 'Out of guesses' if @guess_count == 0 && !victory?
     end
   end
 
