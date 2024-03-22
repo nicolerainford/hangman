@@ -1,46 +1,20 @@
-require "yaml"
+require 'yaml'
 
-class A
-  def initialize(string, number)
-    @string = string
-    @number = number
+class Person
+  attr_accessor :name
+
+  def initialize(name:)
+    @name = name
   end
 
-  def to_s
-    "In A:\n   #{@string}, #{@number}\n"
-  end
-end
-
-class B
-  def initialize(number, a_object)
-    @number = number
-    @a_object = a_object
-  end
-
-  def to_s
-    "In B: #{@number} \n  #{@a_object.to_s}\n"
+  def info
+    "Name: #{name}"
   end
 end
 
-class C
-  def initialize(b_object, a_object)
-    @b_object = b_object
-    @a_object = a_object
-  end
+a = Person.new(name: 'tim')
 
-  def to_s
-    "In C:\n #{@a_object} #{@b_object}\n"
-  end
-end
+puts "person instance: #{a}"
 
-a = A.new("hello world", 5)
-b = B.new(7, a)
-c = C.new(b, a)
-
-#puts c
-
-serialized_object = YAML::dump(c)
-puts serialized_object
-
-#when saving file how do i name it?
-#look at event manager for hiint
+yaml_string = a.to_yaml
+puts "person instance as yaml string: #{yaml_string}"

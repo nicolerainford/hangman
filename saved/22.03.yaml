@@ -1,0 +1,14 @@
+---
+secret word:
+- a
+- a
+- a
+placeholder:
+- _
+- _
+- _
+victory: false
+guess count: 8
+guess array:
+- l
+- b
