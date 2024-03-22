@@ -9,11 +9,15 @@
 # need an array of guesses so far
 # only display
 require 'yaml'
+require './database'
 
 class Hangman
+  #need to add attr accessor
+  attr_accessor :secret_word, :placeholder, :victory, :guess_array, :guess_count
+include Database
   def initialize
     @words_arr = []
-    File.open('google-10000-english-no-swears.txt') do |file|
+    File.open('../google-10000-english-no-swears.txt') do |file|
       file.each_line do |line|
         @words_arr << line.strip
       end
@@ -51,38 +55,19 @@ class Hangman
   end
 
   def victory?
-    p "value of victory is #{@victory}"
+    #p "value of victory is #{@victory}"
     return unless @placeholder === @secret_word
 
     @victory = true
     p 'You have won!'
   end
 
-  def save_game(game_name)
-    Dir.mkdir('saved') unless Dir.exist?('saved')
-    yaml = YAML.dump(self)
-    filename = "saved/#{game_name}.yml"
-    File.open(filename, 'w') do |file|
-      file.write yaml
-    end
-    puts "Your game has been saved. Thanks for playing!"
-    exit
-  end
-=begin
-  def load_game(game_name)
-    filename = "./saved/#{game_name}.yml"
-    data = File.open(filename, "r") do |file|
-      file.read
-    end
-    yaml = YAML.load(data)
-  end
-=end
-
-def load_game
-  #yaml =
-end
-
   def handle_guess
+    puts "Welcome to terminal hangman"
+    puts "A random word with 5-12 letters will be chosen. On each turn, you can guess one letter. A random word with 5-12 letters will be chosen. On each turn, you can guess one letter."
+    puts "To win you must find all letters in the word before using 10 incorrect guesses "
+    puts "Would you like to:"
+    puts display_start_choice
     # later add in loop count
     @placeholder = Array.new(@secret_word.length, '_')
     p "secret word is #{@secret_word}"
@@ -96,9 +81,11 @@ end
         game_name = gets.chomp
         save_game(game_name)
       elsif @guess === "load"
-          puts "Here are the current saved games. Please choose which you'd like to load."
-          game_name = gets.chomp
-          load_game(game_name)
+          #puts "Here are the current saved games. Please choose which you'd like to load."
+          #game_name = gets.chomp
+          #load_game(game_name)
+          load_saved_file
+          p @placeholder
         else next unless @guess.length == 1 && @guess.respond_to?(:to_s)
       end
       update_placeholder
