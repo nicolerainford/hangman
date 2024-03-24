@@ -1,20 +1,12 @@
-# what happens?
-# start game
-# computer generates word from list btwn 5-12 chars
-# starts with 10 guess
-# guess a letter at a time
-# all guesses are saved into an array
-# is guess is correct its displayed amongst the _ _ _ _
-# need victory? method
-# need an array of guesses so far
-# only display
+# change how file names are displayed. take out the yaml.
 require 'yaml'
-require './database'
+require_relative 'database'
 
 class Hangman
-  #need to add attr accessor
+  # need to add attr accessor
   attr_accessor :secret_word, :placeholder, :victory, :guess_array, :guess_count
-include Database
+
+  include Database
   def initialize
     @words_arr = []
     File.open('../google-10000-english-no-swears.txt') do |file|
@@ -55,39 +47,50 @@ include Database
   end
 
   def victory?
-    #p "value of victory is #{@victory}"
+    # p "value of victory is #{@victory}"
     return unless @placeholder === @secret_word
 
     @victory = true
     p 'You have won!'
   end
 
+  def start_choice
+    user_choice = 0
+    user_choice = gets.chomp
+    until user_choice === '1' || user_choice === '2'
+      puts 'Please input either 1 or 2'
+      user_choice = gets.chomp
+    end
+    if user_choice === '1'
+      word_generator
+      handle_guess
+    elsif user_choice === '2'
+      load_saved_file
+    end
+  end
+
   def handle_guess
-    puts "Welcome to terminal hangman"
-    puts "A random word with 5-12 letters will be chosen. On each turn, you can guess one letter. A random word with 5-12 letters will be chosen. On each turn, you can guess one letter."
-    puts "To win you must find all letters in the word before using 10 incorrect guesses "
-    puts "Would you like to:"
-    puts display_start_choice
     # later add in loop count
     @placeholder = Array.new(@secret_word.length, '_')
     p "secret word is #{@secret_word}"
     # text to make guess
     while !@victory && @guess_count > 0
-      p 'player enter your guess'
+      puts 'player enter your guess'
       @guess = gets.chomp
-      #next unless @guess.length == 1 && @guess.respond_to?(:to_s)
-      if @guess === "save"
-        puts "Enter name for saved game"
+      puts "#{@guess.length}"
+      if @guess === 'save'
+        puts 'Enter name for saved game'
         game_name = gets.chomp
         save_game(game_name)
-      elsif @guess === "load"
-          #puts "Here are the current saved games. Please choose which you'd like to load."
-          #game_name = gets.chomp
-          #load_game(game_name)
-          load_saved_file
-          p @placeholder
-        else next unless @guess.length == 1 && @guess.respond_to?(:to_s)
+      # elsif @guess.length > 1 || !(@guess.is_a?(String))
+      elsif @guess.length > 1 || !('a'..'z').include?(@guess)
+        while @guess.length > 1 || !('a'..'z').include?(@guess)
+            puts 'please only enter one letter'
+          @guess = gets.chomp
+        end
       end
+      next unless @guess.length == 1 && ('a'..'z').include?(@guess)
+
       update_placeholder
       break if victory?
 
@@ -103,6 +106,12 @@ include Database
   end
 
   def start_game
+    puts 'Welcome to terminal hangman'
+    puts 'A random word with 5-12 letters will be chosen. On each turn, you can guess one letter. A random word with 5-12 letters will be chosen. On each turn, you can guess one letter.'
+    puts 'To win you must find all letters in the word before using 10 incorrect guesses '
+    puts 'Would you like to:'
+    puts display_start_choice
+    start_choice
     word_generator
     handle_guess
   end
@@ -110,3 +119,6 @@ end
 
 game = Hangman.new
 game.start_game
+
+word_generator
+handle_guess

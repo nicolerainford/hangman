@@ -25,9 +25,14 @@ module Database
 
   def file_list
     files = []
-    directory = File.expand_path("../saved")
+    directory = File.expand_path("../../saved",__FILE__)
+    puts "dir path: #{directory}"
+    all_files = Dir["#{directory}/*"]
+    puts "files in dir: #{all_files} end"
     Dir.entries(directory).each do |name|
-      files << name if name.match(/(yaml)/)
+      if name.match(/\.yaml\z/)
+        files << name.gsub(/\.yaml\z/, "")
+      end
     end
     files
   end
@@ -48,13 +53,13 @@ module Database
     text1 = "Play a new game"
     text2 = "Load a saved game"
     <<~HEREDOC
-    \e[34m[#{[1]}]\e[0m #{text1}
-    \e[34m[#{[2]}]\e[0m #{text2}
+    \e[34m[#{1}]\e[0m #{text1}
+    \e[34m[#{2}]\e[0m #{text2}
     HEREDOC
   end
 
-
   def load_saved_file
+    puts "Here are the current saved games. Please choose which you'd like to load."
     show_file_list
     p "enter file name"
     @saved_game = gets.chomp
