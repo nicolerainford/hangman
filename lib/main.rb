@@ -1,4 +1,4 @@
-# change how file names are displayed. take out the yaml.
+# error text if I type in wrong file name
 require 'yaml'
 require_relative 'database'
 
@@ -35,15 +35,20 @@ class Hangman
   end
 
   def check_guess_result
+    puts "check guess result"
+
+    if @secret_word.include?(@guess)
+      p "true"
+    else p "false"
+    end
     if @secret_word.include?(@guess) && !victory?
       puts 'Good guess!'
     elsif !@secret_word.include?(@guess) && !@guess_array.include?(@guess)
       puts 'No luck!'
       @guess_count -= 1
-    elsif @secret_word.include?(@guess) && @guess_array.include?(@guess)
-      puts "You've already guessed that letter!"
+    elsif @guess_array.include?(@guess)
+      puts "You guessed that already"
     end
-    # puts "You've already guessed that letter!" if @guess_array.include?(@guess)
   end
 
   def victory?
@@ -66,18 +71,19 @@ class Hangman
       handle_guess
     elsif user_choice === '2'
       load_saved_file
+      handle_guess
     end
   end
 
   def handle_guess
-    # later add in loop count
+    #later add in loop count
     @placeholder = Array.new(@secret_word.length, '_')
     p "secret word is #{@secret_word}"
     # text to make guess
     while !@victory && @guess_count > 0
       puts 'player enter your guess'
       @guess = gets.chomp
-      puts "#{@guess.length}"
+      #puts "#{@guess.length}"
       if @guess === 'save'
         puts 'Enter name for saved game'
         game_name = gets.chomp
@@ -96,6 +102,7 @@ class Hangman
 
       # victory?
       check_guess_result
+      #puts "guess result checked"
       # break if victory?
       @guess_array << @guess unless @guess_array.include?(@guess)
       p "You have #{@guess_count} incorrect guesses remaining" if @guess_count >= 1 && !@secret_word.include?(@guess)

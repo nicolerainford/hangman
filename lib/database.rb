@@ -61,7 +61,7 @@ module Database
   def load_saved_file
     puts "Here are the current saved games. Please choose which you'd like to load."
     show_file_list
-    p "enter file name"
+    puts "enter file name"
     @saved_game = gets.chomp
     file = YAML.safe_load(File.read("../saved/#{@saved_game}.yaml"))
     @secret_word = file['secret word']
@@ -71,6 +71,7 @@ module Database
       @guess_array = file['guess array']
       p @guess_array
       p @placeholder
-      @guess = gets.chomp
+      #puts "player enter your guess"
+      #@guess = gets.chomp
   end
 end
