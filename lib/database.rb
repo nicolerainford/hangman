@@ -1,33 +1,33 @@
 module Database
-  def save_game
+  def save_game_choice
+    Dir.mkdir('../saved') unless Dir.exist?('../saved')
     puts 'Enter name for saved game'
-    # game_name = gets.chomp
-    # Dir.mkdir('saved') unless Dir.exist?('saved')
-    save_name = gets.chomp
-    file_path = File.expand_path("../saved/#{save_name}.yaml", __dir__)
-    return unless File.exist?(file_path)
+    @save_name = gets.chomp
+    file_path = File.expand_path("../saved/#{@save_name}.yaml", __dir__)
+    if File.exist?(file_path)
+     puts "Game name " + Rainbow("#{@save_name}").cyan + " already exists. Are you sure you want to overwrite the file? (Yes/No)"
+     overwrite_choice = gets.chomp.downcase
+     until ["n", "y", "yes", "no"].include?(overwrite_choice)
+       puts 'Please either type yes or no'
+       overwrite_choice = gets.chomp.downcase
+     end
+       if ["n","no"].include?(overwrite_choice)
+         handle_guess
+       elsif ["yes","y"].include?(overwrite_choice)
+         save_game
+       end
+      else
+        save_game
+     end
+  end
 
-    puts "File #{save_name} already exists. Are you sure you want to overwrite the file? (Yes/No)"
-    overwrite_choice = gets.chomp.downcase
-    if overwrite_choice === 'n' || overwrite_choice ==='no'
-      handle_guess
-    elsif overwrite_choice === 'y' || overwrite_choice ==='yes'
-      filename = "../saved/#{save_name}.yaml"
-      File.open(filename, 'w') do |file|
-        file.write save_to_yaml
-      end
-      puts 'Your game has been saved. Thanks for playing!'
-      exit
-    else puts 'Please either type yes or no'
-      save_game
+  def save_game
+    filename = "../saved/#{@save_name}.yaml"
+    File.open(filename, 'w') do |file|
+      file.write save_to_yaml
     end
-
-    #       filename = "../saved/#{save_name}.yaml"
-    #     File.open(filename, 'w') do |file|
-    #       file.write save_to_yaml
-    #     end
-    #     puts 'Your game has been saved. Thanks for playing!'
-    #     exit
+    puts "Your game " + Rainbow("#{@save_name}").crimson + " has been saved. Thanks for playing!"
+    exit
   end
 
   def save_to_yaml
@@ -40,14 +40,10 @@ module Database
     )
   end
 
-  # unserialise?
-
   def file_list
     files = []
     directory = File.expand_path('../saved', __dir__)
-    puts "dir path: #{directory}"
     all_files = Dir["#{directory}/*"]
-    puts "files in dir: #{all_files} end"
     Dir.entries(directory).each do |name|
       files << name.gsub(/\.yaml\z/, '') if name.match(/\.yaml\z/)
     end
@@ -60,30 +56,20 @@ module Database
     end
   end
 
-=begin
-  def display_saved_games(number, name)
-    <<~HEREDOC
-      \e[34m[#{number}]\e[0m #{name}
-    HEREDOC
-  end
-
-  def display_start_choice
-    text1 = 'Play a new game'
-    text2 = 'Load a saved game'
-    <<~HEREDOC
-      \e[34m[1]\e[0m #{text1}
-      \e[34m[2]\e[0m #{text2}
-    HEREDOC
-  end
-=end
-
   def load_saved_file
     puts "Here are the current saved games. Please choose which you'd like to load."
     show_file_list
     puts 'enter file name'
-    @saved_game = gets.chomp
-    file = YAML.safe_load(File.read("../saved/#{@saved_game}.yaml"))
-    puts "loading #{saved_game}..."
+    load_name = gets.chomp.downcase
+    file_path = File.expand_path("../saved/#{@load_name}.yaml", __dir__)
+    while !File.exist?(file_path)
+      puts "Please enter an " + Rainbow("existing").underline + " file name"
+      load_name = gets.chomp.downcase
+      file = YAML.safe_load(File.read("../saved/#{load_name}.yaml"))
+    end
+
+    file = YAML.safe_load(File.read("../saved/#{load_name}.yaml"))
+    puts "loading " + Rainbow("#{saved_name}").cyan + " ..."
     @secret_word = file['secret word']
     @placeholder = file['placeholder']
     @victory = file['victory']

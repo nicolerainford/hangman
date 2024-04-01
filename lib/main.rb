@@ -1,7 +1,3 @@
-# error text for wrong file name
-# play again
-# game over sequence -"word you were trying to guess was ......" right now just says out of guesses
-#when we start over
 require 'yaml'
 require 'rainbow'
 require_relative 'database'
@@ -50,12 +46,19 @@ class Hangman
     end
   end
 
+  def lose_game
+    return unless @guess_count === 0
+    puts "Out of guesses"
+    puts "The word you were trying to guess was" + Rainbow("#{@secret_word.join}")
+  end
+
   def victory?
     return unless @placeholder === @secret_word
     @victory = true
     @game_over = true
-    p 'You have won!'
-    puts @placeholder.join
+    puts 'You have won!'
+    puts "The word you were trying to guess was " +
+    Rainbow("#{@placeholder.join}").cyan
     play_again
   end
 
@@ -70,26 +73,29 @@ class Hangman
      user_choice = gets.chomp
    end
    if user_choice === "1"
-     start_game
+    @victory = false
+    start_instructions
    elsif user_choice "2"
       exit
     end
   end
 
   def game_over?
-    if guess_count === 0 || victory
+    if guess_count === 0 || @victory
       @game_over = true
+      play_again
     end
   end
 
   def start_choice
-    user_choice = 0
     user_choice = gets.chomp
     until user_choice === '1' || user_choice === '2'
       puts 'Please input either 1 or 2'
       user_choice = gets.chomp
     end
     if user_choice === '1'
+      @guess_array = []
+      @guess_count = 10
       word_generator
       handle_guess
     elsif user_choice === '2'
@@ -103,9 +109,8 @@ class Hangman
     while !@victory && @guess_count > 0
       puts 'player enter your guess'
       @guess = gets.chomp
-      # puts "#{@guess.length}"
       if @guess === 'save'
-        save_game
+        save_game_choice
       elsif @guess.length > 1 || !('a'..'z').include?(@guess)
         while @guess.length > 1 || !('a'..'z').include?(@guess)
           puts 'please only enter one letter'
@@ -116,27 +121,19 @@ class Hangman
 
       update_placeholder
       victory?
-      # break if victory?
-
-      # if !victory?
       check_guess_result
-      # puts "guess result checked"
-      # break if victory?
       @guess_array << @guess unless @guess_array.include?(@guess)
-      # p "You have #{@guess_count} incorrect guesses remaining" if @guess_count #>= 1 && !@secret_word.include?(@guess)
-      # puts "Letters guessed: #{@guess_array}" unless victory?
       display_letters_guessed unless victory?
-      p @placeholder
-      puts 'Out of guesses' if @guess_count == 0 && !victory?
+      puts @placeholder.join(" ")
+      #puts 'Out of guesses' if @guess_count == 0 && !victory?
+      lose_game
       game_over?
-      play_again
       break if victory?
     end
   end
 
   def start_game
     start_instructions
-    start_choice
   end
 end
 

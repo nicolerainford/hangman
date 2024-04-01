@@ -13,6 +13,7 @@ def start_instructions
   puts 'Would you like to:'
   puts Rainbow('[1] ').blue + 'Play a new game'
   puts Rainbow('[2] ').blue + 'Load a saved game'
+  start_choice
 end
 
 def display_letters_guessed
@@ -23,9 +24,8 @@ def display_incorrect_guess_remaining
   if @guess_count >=4
    puts "You have " + Rainbow("#{@guess_count}").orange.bright + " incorrect guesses remaining"
   elsif @guess_count < 4 && @guess_count > 1
-    puts "You have " + Rainbow("#{@guess_count}").red + " incorrect guesses remaining"
+    puts "You have " + Rainbow("#{@guess_count}").red.bright + " incorrect guesses remaining"
   elsif @guess_count === 1
-    puts "You have " + Rainbow("#{@guess_count}").red + " incorrect guess remaining"
+    puts "You have " + Rainbow("#{@guess_count}").red.bright + " incorrect guess remaining"
   end
 end
-
